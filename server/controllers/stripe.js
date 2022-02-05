@@ -38,6 +38,23 @@ let accountLink = await stripe.accountLinks.create({
 };
 
 
-//console.log("REQ USER FROM REQUIRE_SIGNIN MIDDLEWARE",req.user);
-    
-//console.log('YOU HIT CREATE CONNECT ACCOUNTS ENDPOINT ')
+export const getAccountStatus = async (req, res) => {
+   console.log("GET ACCOUNT STATUS");
+  const user = await User.findById(req.user._id).exec();
+  const account = await stripe.accounts.retrieve(user.stripe_account_id);
+   console.log("USER ACCOUNT RETRIEVE", account);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      stripe_seller: account
+    }
+  ).exec();
+  console.log(updatedUser);
+  res.json(updatedUser);
+};
+
+
+
+
+
